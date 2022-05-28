@@ -203,6 +203,8 @@ func DoSubDomain(g *gin.Context) {
 				}
 			}
 			// 存储任务到 SQLite
+			// ES 中查询记录数大于1，则任务执行过任务
+			；
 			task := mds.Task{Target: x, TaskType: mds.TaskType_Subdomain, Status: mds.Task_Status_Pending}
 			// 任务从表中抓去、执行、更新状态
 			if 0 < db.Create[mds.Task](task) {
