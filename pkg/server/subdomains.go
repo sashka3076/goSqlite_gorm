@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/hktalent/go4Hacker/lib/hacker"
 	kv "goSqlite_gorm/pkg/common"
@@ -14,18 +15,18 @@ import (
 )
 
 func SaveDomain(domain string, ips []string) string {
-	log.Println("start save ", domain)
+	//log.Println("start save ", domain)
 	var d = mds.Domain{Domain: domain, Ips: ips}
 	x1 := es7.NewEs7()
 	x2 := x1.GetDoc(d, domain)
-	if nil != x2 {
-		if -1 < strings.Index(x2.String(), domain) {
-			log.Println("exist ", domain)
+	if "" != x2 {
+		if -1 == strings.Index(x2, "404 Not Found") && -1 < strings.Index(x2, domain) {
+			log.Println("exist ", domain, " ", x2)
 			return ""
 		}
 	}
 	s := x1.Create(d, domain)
-	log.Println(s)
+	//log.Println(s)
 	return s
 }
 
@@ -95,7 +96,6 @@ func DoDomain2Ips(s string) {
 					return GetIps(s00)
 				})(a[i])
 			}
-
 		}
 	}
 }
@@ -113,7 +113,6 @@ func DoListDomains(s string) {
 						continue
 					}
 				}
-
 				if -1 < strings.Index(x, "//") {
 					a[i] = strings.Split(x, "//")[1]
 				}
@@ -127,11 +126,31 @@ func DoListDomains(s string) {
 	}
 }
 
-//
+// 获取domian列表信息
+func GetDomainLst(g *gin.Context) {
+	a := []string{}
+	s := GetParms(g, "dlst")
+	x := strings.Split(s, "\n")
+	for _, j := range x {
+		j = strings.TrimSpace(j)
+		if "" != j {
+			a = append(a, "domain:%20in%20*"+j+"*")
+		}
+	}
+	if 0 < len(a) {
+		log.Println(strings.Join(a, "%20or%20"))
+		s = es7.GetUrlInfo("http://127.0.0.1:9200/domain_index/_search?q="+strings.Join(a, "%20or%20"), `{"from": 0,"size": 10000}`)
+	} else {
+		s = "[]"
+	}
+	var m1 map[string]interface{}
+	json.Unmarshal([]byte(s), &m1)
+	g.JSON(http.StatusOK, m1)
+}
 
-// dlst=
-func SaveDomainLst(g *gin.Context) {
-	s := g.Request.FormValue("dlst")
+// 获取参数
+func GetParms(g *gin.Context, key string) string {
+	s := g.Request.FormValue(key)
 	if "" == s {
 		var m map[string]string
 		g.BindJSON(&m)
@@ -139,6 +158,12 @@ func SaveDomainLst(g *gin.Context) {
 			s = s1
 		}
 	}
+	return s
+}
+
+// dlst=
+func SaveDomainLst(g *gin.Context) {
+	s := GetParms(g, "dlst")
 	DoListDomains(s)
 	g.JSON(http.StatusOK, gin.H{"msg": "ok", "code": 200})
 }
@@ -159,6 +184,9 @@ func SaveSubDomain(g *gin.Context) {
 
 	if -1 < strings.Index(m.Domain, "//") {
 		m.Domain = strings.Split(m.Domain, "//")[1]
+	}
+	if -1 < strings.Index(m.Domain, ":") {
+		m.Domain = strings.Split(m.Domain, ":")[0]
 	}
 	a := GetIps(m.Domain)
 	if 0 < len(a) {
@@ -195,7 +223,7 @@ func DoSubDomain(g *gin.Context) {
 				if nil != x11 && 0 < len(x11) {
 					// 做端口扫描任务记录
 					// 存储任务到 SQLite
-					task := mds.Task{Target: x, TaskType: mds.TaskType_IP2Port, Status: mds.Task_Status_Pending}
+					task := mds.Task{Target: x, TaskType: mds.TaskType_PortScan, Status: mds.Task_Status_Pending}
 					// 任务从表中抓去、执行、更新状态
 					if 0 < db.Create[mds.Task](task) {
 						// ;
@@ -228,5 +256,8 @@ func DoSubDomain(g *gin.Context) {
 func InitSubDomainRoute(router *gin.RouterGroup) {
 	router.POST("/subdomian", SaveSubDomain)
 	router.POST("/doSubdomian", DoSubDomain)
+	// 记录域名(转换域名ips信息 + 域名)
 	router.POST("/dlists", SaveDomainLst)
+	router.POST("/gdlists", GetDomainLst)
+
 }

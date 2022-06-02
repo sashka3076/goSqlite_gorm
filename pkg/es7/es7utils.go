@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	elasticsearch7 "github.com/elastic/go-elasticsearch/v7"
 	"github.com/elastic/go-elasticsearch/v7/esapi"
+	"io"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -40,25 +43,62 @@ func (es7 *Es7Utils) GetIndexName(t1 any) string {
 	return strings.ToLower(reflect.TypeOf(t1).Name() + "_index")
 }
 
+func GetUrlInfo(url string, json string) string {
+	req, err := http.NewRequest("GET", url, nil)
+	if err == nil {
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15")
+		req.Header.Add("Cache-Control", "no-cache")
+		if "" != json {
+			req.Header.Add("Content-Type", "application/json")
+		}
+		// keep-alive
+		req.Header.Add("Connection", "close")
+		req.Close = true
+		req.Body = io.NopCloser(strings.NewReader(json))
+
+		resp, err := http.DefaultClient.Do(req)
+		if resp != nil {
+			defer resp.Body.Close() // resp 可能为 nil，不能读取 Body
+		}
+		if err != nil {
+			log.Println(err)
+			return ""
+		}
+		s1, err := ioutil.ReadAll(resp.Body)
+		if nil == err {
+			return string(s1)
+		}
+	} else {
+		log.Println(err)
+	}
+	return ""
+}
+
 // get Doc
-func (es7 *Es7Utils) GetDoc(t1 any, id string) *esapi.Response {
+func (es7 *Es7Utils) GetDoc(t1 any, id string) string {
 	response, err := es7.Client.Get(es7.GetIndexName(t1), id)
 	if nil != err {
 		log.Println(err)
+		return ""
+	} else {
+		response.Body.Close()
 	}
-	return response
+	return response.String()
 }
-func (es7 *Es7Utils) Update(t1 any, id string) *esapi.Response {
+func (es7 *Es7Utils) Update(t1 any, id string) string {
 	body := &bytes.Buffer{}
 	err := json.NewEncoder(body).Encode(&t1)
 	if nil != err {
-		return nil
+		log.Println(err)
+		return ""
 	}
 	response, err := es7.Client.Update(es7.GetIndexName(t1), id, body)
 	if nil != err {
 		log.Println(err)
+	} else {
+		defer response.Body.Close()
 	}
-	return response
+	return response.String()
 }
 
 // 创建索引
