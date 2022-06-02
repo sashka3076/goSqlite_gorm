@@ -11,7 +11,7 @@
 echo $PPSSWWDD | sudo -S ./tools/whereami
 <img width="488" alt="image" src="https://user-images.githubusercontent.com/18223385/168608623-e4e58ab3-cdca-4983-97e6-7bba58410e83.png">
 
-# How
+# How build, use
 ```bash
 go install -v github.com/OWASP/Amass/v3/...@master
 
