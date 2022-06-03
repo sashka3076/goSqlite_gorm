@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"goSqlite_gorm/pkg/util"
 	"io"
 	"io/ioutil"
 	"log"
@@ -670,35 +671,12 @@ func processEnumInputFiles(args *enumArgs) error {
 				return fmt.Errorf("failed to parse the domain names file: %v", err)
 			}
 			lst1 := []string{}
-			a1 := strings.Split("app,net,org,vip,cc,cn,co,io,com,gov.edu", ",")
 			for _, x := range list {
-				x = strings.TrimSpace(x)
-				if "*.*" == x || -1 < strings.Index(x, ".*.") {
-					continue
+				a1 := util.Convert2Domains(x)
+				if 0 < len(a1) {
+					lst1 = append(lst1, a1...)
 				}
-				if -1 < strings.Index(x, "(*).") {
-					x = x[4:]
-					log.Println("(*).", x)
-				}
-				if -1 < strings.Index(x, "*.") {
-					x = x[2:]
-					log.Println("*.", x)
-				}
-				if 2 > strings.Index(x, "*") {
-					x = x[1:]
-					log.Println("*", x)
-				}
-				if -1 < strings.Index(x, ".*") {
-					x = x[0 : len(x)-2]
-					for _, j := range a1 {
-						lst1 = append(lst1, x+"."+j)
-						log.Println(".*", x+"."+j)
-					}
-					continue
-				}
-				lst1 = append(lst1, x)
 			}
-
 			args.Domains.InsertMany(lst1...)
 		}
 	}

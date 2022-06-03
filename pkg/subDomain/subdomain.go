@@ -68,7 +68,7 @@ func commandUsage(msg string, cmdFlagSet *flag.FlagSet, errBuf *bytes.Buffer) {
 
 // 7.2k https://github.com/OWASP/Amass
 // 5.9k https://github.com/OJ/gobuster
-// 5.6k https://github.com/projectdiscovery/subfinder
+// 5.7k https://github.com/projectdiscovery/subfinder
 func main() {
 	var version, help1, help2 bool
 	mainFlagSet := flag.NewFlagSet("amass", flag.ContinueOnError)
