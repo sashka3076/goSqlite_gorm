@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/dgraph-io/badger"
 	"log"
+	"os"
 )
 
 var cache1 = NewKvDbOp()
@@ -16,7 +17,12 @@ type KvDbOp struct {
 
 func NewKvDbOp() *KvDbOp {
 	r := KvDbOp{}
-	r.Init("db/DbCache")
+	CacheName := "db/DbCache"
+	s1 := os.Getenv("CacheName")
+	if "" != s1 {
+		CacheName = s1
+	}
+	r.Init(CacheName)
 	return &r
 }
 

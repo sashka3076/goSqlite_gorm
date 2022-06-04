@@ -9,6 +9,8 @@ hktdist
 node_modules
 yarn.lock
 DbCache
+db/*
+tools/Check_CVE_2020_26134
 *.dylib
 mydbfile.db*
 .DS_Store
