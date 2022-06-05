@@ -26,7 +26,7 @@ func SaveDomain(domain string, ips []string) string {
 		}
 	}
 	s := x1.Create(d, domain)
-	//log.Println(s)
+	log.Println("saved ", domain)
 	return s
 }
 

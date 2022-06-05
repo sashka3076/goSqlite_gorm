@@ -23,7 +23,7 @@ type Cve202026134 struct {
 var saveC = make(chan Cve202026134, 2000)
 
 func Log1(msg ...any) {
-	fmt.Println(msg)
+	fmt.Print(msg)
 }
 
 func SaveOut() {
@@ -32,6 +32,7 @@ func SaveOut() {
 		select {
 		case x := <-saveC:
 			dbS.Save(x)
+			Log1(x.Url, " is save")
 		}
 	}
 }
@@ -42,7 +43,7 @@ func CheckOption(domain string) {
 		<-nThreads1
 	}()
 	// Post "77beaaf8081e4e45adb550194cc0f3a62ebb665f": unsupported protocol scheme ""
-	url := "http://" + domain + "/"
+	url := "http://" + domain + ":8080/"
 	xreg, err := regexp.Compile(`(\d{1,3}\.){3}\d{1,3}`)
 	if nil == err {
 		x11 := xreg.FindAllString(domain, -1)
@@ -54,8 +55,9 @@ func CheckOption(domain string) {
 			}
 		}
 	}
+	Log1("start ", domain, "                                                                \r")
 	client := http.Client{
-		Timeout: time.Duration(5 * time.Second),
+		Timeout: time.Duration(3 * time.Second),
 	}
 	req, err := http.NewRequest("OPTION", url, nil)
 	if err != nil {
@@ -76,7 +78,7 @@ func CheckOption(domain string) {
 			}
 		}()
 	}
-	if err != nil && nil != resp {
+	if err == nil && nil != resp {
 		if _, ok := resp.Header["X-Confluence-Request-Time"]; ok {
 			saveC <- Cve202026134{Url: url}
 			Log1("found ", url)
@@ -99,7 +101,7 @@ func main() {
 				//os.Setenv("CacheName", "db/Cve202026134Cache")
 				Log1("domains num: ", len(a))
 				go SaveOut()
-				//go server.DoDomainLists(a)
+				go server.DoDomainLists(a)
 				for _, x := range a {
 					go func(x1 string) {
 						CheckOption(x1)
