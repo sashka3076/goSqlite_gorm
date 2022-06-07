@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
+	_ "net/http/pprof"
 	"regexp"
 	"strings"
 	"time"
@@ -55,7 +56,7 @@ func CheckOption(domain string) {
 			}
 		}
 	}
-	Log1("start ", domain, "                                                                \r")
+	Log1("start ", domain, "                                                         \r")
 	client := http.Client{
 		Timeout: time.Duration(3 * time.Second),
 	}
@@ -91,13 +92,23 @@ func CheckOption(domain string) {
 // DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="/Users/51pwn/MyWork/mybugbounty/allDomains.txt"
 func main() {
 	var domainsName string
+	var debug bool
 	flag.StringVar(&domainsName, "config", "./allDomains.txt", "config file name")
+	flag.BoolVar(&debug, "debug", false, "debug")
 	flag.Parse()
 	if "" != domainsName {
 		s1, err := ioutil.ReadFile(domainsName)
 		if nil == err {
 			a := strings.Split(strings.TrimSpace(string(s1)), "\n")
 			if 0 < len(a) {
+				// debug 优化时启用///////////////////////
+				if debug {
+					go func() {
+						fmt.Println("debug info: \nopen http://127.0.0.1:6060/debug/pprof/\n")
+						http.ListenAndServe(":6060", nil)
+					}()
+				}
+				//////////////////////////////////////////*/
 				//os.Setenv("CacheName", "db/Cve202026134Cache")
 				Log1("domains num: ", len(a))
 				go SaveOut()
