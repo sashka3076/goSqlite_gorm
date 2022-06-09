@@ -1,12 +1,14 @@
 package main
 
 import (
+	"flag"
 	"github.com/gin-gonic/gin"
 	"goSqlite_gorm/pkg/db"
 	mymod "goSqlite_gorm/pkg/models"
 	initrt "goSqlite_gorm/pkg/server"
 	task "goSqlite_gorm/pkg/task"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 var dbCC *gorm.DB = db.GetDb(&mymod.RemouteServerce{})
@@ -22,6 +24,8 @@ var dbCC *gorm.DB = db.GetDb(&mymod.RemouteServerce{})
 // @host localhost:8080
 // @BasePath /api/v1
 func main() {
+	var port int
+	flag.IntVar(&port, "port", 8081, "port")
 	// 包含启动ssh server，方便通过web连接本地的shell
 	go task.DoAllTask()
 
@@ -29,11 +33,10 @@ func main() {
 		router := gin.Default()
 		initrt.InitRoute(router)
 		//router.Use(ConnRmtSvsMiddleware())
-
 		// swagger 似乎成了所有例子的路径
 		//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-		router.Run(":8081")
+		router.Run(":" + strconv.Itoa(port))
 		//var x509 tls.Certificate
 		//x509, err := tls.LoadX509KeyPair(SSLCRT, SSLKEY)
 		//if err != nil {

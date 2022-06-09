@@ -89,7 +89,7 @@ func CheckOption(domain string) {
 }
 
 // check CVE-2022-26134
-// DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="/Users/51pwn/MyWork/mybugbounty/allDomains.txt"
+// DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="${HOME}/MyWork/mybugbounty/allDomains.txt"
 func main() {
 	var domainsName string
 	var debug bool

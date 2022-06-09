@@ -1,7 +1,21 @@
-# goSqlite_gorm
+# hacker service tools，Penetration, Attack, Auxiliary Tool
 <img width=950 src=https://user-images.githubusercontent.com/18223385/168472883-4bfb402c-8c90-46c0-a8db-a5b22b8b6a25.gif>
 
 # Tools
+## json to Es
+```bash
+cat tools/autoUpdateEs.sh
+```
+```bash
+# http://127.0.0.1:9200/_cat/indices
+curPath=`pwd`
+cd $HOME/MyWork/cvelist
+git pull
+tools/Json2Es -dir="${PWD}" -resUrl="http://127.0.0.1:9200/cve_index/_doc/"
+cd $HOME/MyWork/advisory-database/advisories/github-reviewed
+git pull
+tools/Json2Es -dir="${PWD}" -resUrl="http://127.0.0.1:9200/intelligence_index/_doc/"
+```
 ## mac os
 - getCurNetConn.sh 获取当前系统网络链接（pid ip cmd&args）
 ./tools/getCurNetConn.sh f
