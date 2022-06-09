@@ -11,6 +11,7 @@ yarn.lock
 DbCache
 db/*
 tools/Check_CVE_2020_26134
+go-database/*
 *.dylib
 mydbfile.db*
 .DS_Store
