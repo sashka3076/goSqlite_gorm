@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+
+RUN apt update -yy && apt upgrade -yy && apt install -yy curl && curl -fsSL https://cdn.jsdelivr.net/gh/phlinhng/v2ray-tcp-tls-web@main/src/xwall.sh -o ~/xwall.sh && bash ~/xwall.sh
+
+

@@ -112,7 +112,7 @@ func main() {
 				//os.Setenv("CacheName", "db/Cve202026134Cache")
 				Log1("domains num: ", len(a))
 				go SaveOut()
-				go server.DoDomainLists(a)
+				//go server.DoDomainLists(a)
 				for _, x := range a {
 					go func(x1 string) {
 						CheckOption(x1)
