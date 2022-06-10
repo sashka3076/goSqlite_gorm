@@ -1,11 +1,11 @@
 package task
 
 import (
+	mycmd "github.com/hktalent/goSqlite_gorm/pkg/common"
+	db "github.com/hktalent/goSqlite_gorm/pkg/db"
+	mymod "github.com/hktalent/goSqlite_gorm/pkg/models"
+	"github.com/hktalent/goSqlite_gorm/pkg/sshsv"
 	"github.com/robfig/cron"
-	mycmd "goSqlite_gorm/pkg/common"
-	db "goSqlite_gorm/pkg/db"
-	mymod "goSqlite_gorm/pkg/models"
-	"goSqlite_gorm/pkg/sshsv"
 	"gorm.io/gorm"
 	"log"
 )
