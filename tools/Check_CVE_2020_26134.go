@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"goSqlite_gorm/pkg/db"
-	"goSqlite_gorm/pkg/server"
+	"github.com/hktalent/goSqlite_gorm/pkg/db"
+	"github.com/hktalent/goSqlite_gorm/pkg/server"
 	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
@@ -32,7 +32,7 @@ func SaveOut() {
 	for {
 		select {
 		case x := <-saveC:
-			if 0 < db.Create[Cve202026134](x) {
+			if 0 < db.Create[Cve202026134](&x) {
 				Log1(x.Url, " is save")
 			} else {
 				Log1(x.Url, " save err")

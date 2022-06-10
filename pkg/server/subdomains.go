@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/hktalent/go4Hacker/lib/hacker"
-	kv "goSqlite_gorm/pkg/common"
-	db "goSqlite_gorm/pkg/db"
-	"goSqlite_gorm/pkg/es7"
-	mds "goSqlite_gorm/pkg/models"
+	kv "github.com/hktalent/goSqlite_gorm/pkg/common"
+	db "github.com/hktalent/goSqlite_gorm/pkg/db"
+	"github.com/hktalent/goSqlite_gorm/pkg/es7"
+	mds "github.com/hktalent/goSqlite_gorm/pkg/models"
 	"log"
 	"net/http"
 	"regexp"
@@ -225,7 +225,7 @@ func DoSubDomain(g *gin.Context) {
 					// 存储任务到 SQLite
 					task := mds.Task{Target: x, TaskType: mds.TaskType_PortScan, Status: mds.Task_Status_Pending}
 					// 任务从表中抓去、执行、更新状态
-					if 0 < db.Create[mds.Task](task) {
+					if 0 < db.Create[mds.Task](&task) {
 						// ;
 					}
 					continue
@@ -236,7 +236,7 @@ func DoSubDomain(g *gin.Context) {
 
 			task := mds.Task{Target: x, TaskType: mds.TaskType_Subdomain, Status: mds.Task_Status_Pending}
 			// 任务从表中抓去、执行、更新状态
-			if 0 < db.Create[mds.Task](task) {
+			if 0 < db.Create[mds.Task](&task) {
 				// ;
 			}
 

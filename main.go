@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"github.com/gin-gonic/gin"
-	"goSqlite_gorm/pkg/db"
-	mymod "goSqlite_gorm/pkg/models"
-	initrt "goSqlite_gorm/pkg/server"
-	task "goSqlite_gorm/pkg/task"
+	"github.com/hktalent/goSqlite_gorm/pkg/db"
+	mymod "github.com/hktalent/goSqlite_gorm/pkg/models"
+	initrt "github.com/hktalent/goSqlite_gorm/pkg/server"
+	task "github.com/hktalent/goSqlite_gorm/pkg/task"
 	"gorm.io/gorm"
 	"strconv"
 )
