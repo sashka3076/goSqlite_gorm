@@ -11,7 +11,6 @@ import (
 	_ "net/http/pprof"
 	"regexp"
 	"strings"
-	"time"
 )
 
 var nThreads1 = make(chan struct{}, 10000)
@@ -27,13 +26,17 @@ func Log1(msg ...any) {
 	fmt.Print(msg)
 }
 
+var db1 = db.GetDb(&Cve202026134{}, "db/Cve202026134")
+
 func SaveOut() {
-	var dbS = db.GetDb(&Cve202026134{}, "db/Cve202026134")
 	for {
 		select {
 		case x := <-saveC:
-			dbS.Save(x)
-			Log1(x.Url, " is save")
+			if 0 < db.Create[Cve202026134](x) {
+				Log1(x.Url, " is save")
+			} else {
+				Log1(x.Url, " save err")
+			}
 		}
 	}
 }
@@ -56,10 +59,15 @@ func CheckOption(domain string) {
 			}
 		}
 	}
-	Log1("start ", domain, "                                                         \r")
-	client := http.Client{
-		Timeout: time.Duration(3 * time.Second),
+	n1 := 70 - len(domain)
+	var s0 = ""
+	if 0 < n1 {
+		s0 = strings.Repeat(" ", n1)
 	}
+	Log1("start ", domain, s0+"\r")
+	//client := http.Client{
+	//	Timeout: time.Duration(3 * time.Second),
+	//}
 	req, err := http.NewRequest("OPTION", url, nil)
 	if err != nil {
 		Log1(fmt.Sprintf("%s error %v", domain, err))
@@ -69,8 +77,8 @@ func CheckOption(domain string) {
 	req.Header.Add("Connection", "close")
 	req.Close = true
 
-	// http.DefaultClient
-	resp, err := client.Do(req)
+	//resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if resp != nil {
 		defer func() {
 			err := resp.Body.Close() // resp 可能为 nil，不能读取 Body
@@ -80,7 +88,8 @@ func CheckOption(domain string) {
 		}()
 	}
 	if err == nil && nil != resp {
-		if _, ok := resp.Header["X-Confluence-Request-Time"]; ok {
+		s9, ok := resp.Header["X-Confluence-Request-Time"]
+		if ok && 0 < len(s9) && "" != s9[0] {
 			saveC <- Cve202026134{Url: url}
 			Log1("found ", url)
 		}
@@ -112,7 +121,7 @@ func main() {
 				//os.Setenv("CacheName", "db/Cve202026134Cache")
 				Log1("domains num: ", len(a))
 				go SaveOut()
-				//go server.DoDomainLists(a)
+				go server.DoDomainLists(a)
 				for _, x := range a {
 					go func(x1 string) {
 						CheckOption(x1)
