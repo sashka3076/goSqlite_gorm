@@ -3,19 +3,27 @@ module github.com/hktalent/goSqlite_gorm
 go 1.18
 
 require (
+	github.com/OWASP/Amass/v3 v3.19.2
 	github.com/caffix/amass v2.3.0+incompatible
+	github.com/caffix/netmap v0.0.0-20220329224824-86a226811ec6
+	github.com/caffix/service v0.2.3
+	github.com/caffix/stringset v0.1.0
 	github.com/creack/pty v1.1.18
+	github.com/daehee/nvd v1.0.4
 	github.com/dgraph-io/badger v1.6.2
 	github.com/elastic/go-elasticsearch/v7 v7.17.1
+	github.com/fatih/color v1.13.0
 	github.com/gin-contrib/gzip v0.0.5
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gliderlabs/ssh v0.3.4
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/hktalent/go4Hacker v0.0.0-20220519134559-c908caccec1d
 	github.com/robfig/cron v1.2.0
 	github.com/swaggo/swag v1.8.1
 	github.com/unrolled/secure v1.10.0
+	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
 	gorm.io/driver/sqlite v1.3.2
 	gorm.io/gorm v1.23.5
 )
@@ -23,7 +31,6 @@ require (
 require (
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
-	github.com/OWASP/Amass/v3 v3.19.2 // indirect
 	github.com/PuerkitoBio/gocrawl v1.1.0 // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
@@ -37,12 +44,9 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/caffix/netmap v0.0.0-20220329224824-86a226811ec6 // indirect
 	github.com/caffix/pipeline v0.1.3 // indirect
 	github.com/caffix/queue v0.1.3 // indirect
 	github.com/caffix/resolve v0.5.4 // indirect
-	github.com/caffix/service v0.2.3 // indirect
-	github.com/caffix/stringset v0.1.0 // indirect
 	github.com/cayleygraph/cayley v0.7.7-0.20220304214302-275a7428fb10 // indirect
 	github.com/cayleygraph/quad v1.2.4 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
@@ -53,13 +57,11 @@ require (
 	github.com/cjoudrey/gluaurl v0.0.0-20161028222611-31cbb9bef199 // indirect
 	github.com/cloudflare/cloudflare-go v0.37.0 // indirect
 	github.com/cnf/structhash v0.0.0-20201127153200-e1b16c1ebc08 // indirect
-	github.com/daehee/nvd v1.0.4 // indirect
 	github.com/dennwc/base v1.0.0 // indirect
 	github.com/dghubble/go-twitter v0.0.0-20220413154426-14d8abde2e80 // indirect
 	github.com/dghubble/sling v1.4.0 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/fatih/color v1.13.0 // indirect
 	github.com/fofapro/fofa-go v0.0.0-20200317042037-c0caee09013d // indirect
 	github.com/geziyor/geziyor v0.0.0-20211211110410-34d17a2d3d5a // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -85,7 +87,6 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hidal-go/hidalgo v0.0.0-20190814174001-42e03f3b5eaa // indirect
@@ -149,7 +150,6 @@ require (
 	go.uber.org/ratelimit v0.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
