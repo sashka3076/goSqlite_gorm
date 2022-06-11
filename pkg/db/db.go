@@ -13,6 +13,7 @@ import (
 var dbCC *gorm.DB
 var DbName = "db/mydbfile"
 
+// go - 交叉编译go-sqlite3 https://www.modb.pro/db/329524
 // ./tools/Check_CVE_2020_26134 -config="/Users/51pwn/MyWork/mybugbounty/allDomains.txt"
 // 获取Gorm db连接、操作对象
 func GetDb(dst ...interface{}) *gorm.DB {
