@@ -7,8 +7,8 @@ import (
 // domain info
 type DomainInfo struct {
 	gorm.Model
-	Name string   `json:"name" gorm:"primaryKey,unique_index"`
-	Ips  []IpInfo `json:"ips"`
+	Name string   `json:"name" gorm:"unique_index"`
+	Ips  []IpInfo `json:"ips" gorm:"foreignKey:ip;references:name"`
 }
 
 // 连接信息
@@ -17,5 +17,5 @@ type ConnectInfo struct {
 	Pid    string `json:"pid"`
 	Ip     string `json:"ip"`
 	Cmd    string `json:"cmd"`
-	IpInfo IpInfo `json:"ipInfo" gorm:"foreignkey:Ip;references:Ip"`
+	IpInfo IpInfo `json:"ipInfo" gorm:"foreignkey:ip;references:ip"`
 }
