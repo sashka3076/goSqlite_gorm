@@ -8,36 +8,35 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 )
 
 var dbCC *gorm.DB
-var DoOnce sync.Once
 var DbName = "db/mydbfile"
 
 // ./tools/Check_CVE_2020_26134 -config="/Users/51pwn/MyWork/mybugbounty/allDomains.txt"
 // 获取Gorm db连接、操作对象
 func GetDb(dst ...interface{}) *gorm.DB {
-	DoOnce.Do(func() {
-		szDf := DbName
-		if 1 < len(dst) {
-			szDf = dst[1].(string)
+	if nil != dbCC {
+		return dbCC
+	}
+	szDf := DbName
+	if 1 < len(dst) {
+		szDf = dst[1].(string)
+	}
+	s1 := os.Getenv("DbName")
+	if "" != s1 {
+		szDf = s1
+	}
+	log.Println("DbName ", szDf)
+	db, err := gorm.Open(sqlite.Open("file:"+szDf+".db?cache=shared&mode=rwc&_journal_mode=WAL&Synchronous=Off&temp_store=memory&mmap_size=30000000000"), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
+	if err == nil {
+		dbCC = db
+		if nil != dst && 0 < len(dst) {
+			db.AutoMigrate(dst[0])
 		}
-		s1 := os.Getenv("DbName")
-		if "" != s1 {
-			szDf = s1
-		}
-		log.Println("DbName ", szDf)
-		db, err := gorm.Open(sqlite.Open("file:"+szDf+".db?cache=shared&mode=rwc&_journal_mode=WAL&Synchronous=Off&temp_store=memory&mmap_size=30000000000"), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
-		if err == nil {
-			if nil != dst && 0 < len(dst) {
-				db.AutoMigrate(dst[0])
-			}
-			dbCC = db
-		} else {
-			log.Println(err)
-		}
-	})
+	} else {
+		log.Println(err)
+	}
 	return dbCC
 }
 
