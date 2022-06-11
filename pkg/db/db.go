@@ -90,7 +90,9 @@ func GetCount[T any](mod T, args ...interface{}) int64 {
 // 通用
 // 查询返回T类型、表一条数据
 func GetOne[T any](rst *T, args ...interface{}) *T {
-	rst1 := dbCC.First(rst, args...)
+	xxxD := dbCC.Table(GetTableName(*rst)).Model(rst)
+	xxxD.AutoMigrate(rst)
+	rst1 := xxxD.First(rst, args...)
 	if 0 == rst1.RowsAffected && nil != rst1.Error {
 		//log.Println(rst1.Error)
 		return nil
