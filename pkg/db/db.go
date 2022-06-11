@@ -64,9 +64,9 @@ func Update[T any](mod T, id interface{}) int64 {
 
 // 通用,insert
 func Create[T any](mod *T) int64 {
-	xxxD := dbCC.Table(GetTableName[T](*mod)).Model(mod)
-	xxxD.AutoMigrate(*mod)
-	rst := xxxD.Create(*mod)
+	xxxD := dbCC.Table(GetTableName(*mod)).Model(mod)
+	xxxD.AutoMigrate(mod)
+	rst := xxxD.Create(mod)
 	if 0 >= rst.RowsAffected {
 		log.Println(rst.Error)
 	}
