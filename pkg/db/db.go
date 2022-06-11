@@ -34,6 +34,8 @@ func GetDb(dst ...interface{}) *gorm.DB {
 				db.AutoMigrate(dst[0])
 			}
 			dbCC = db
+		} else {
+			log.Println(err)
 		}
 	})
 	return dbCC
