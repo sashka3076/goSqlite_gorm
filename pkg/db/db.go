@@ -53,7 +53,7 @@ func GetTableName[T any](mod T) string {
 // 指定id更新T类型mod数据
 func Update[T any](mod T, id interface{}) int64 {
 	var t1 *T = &mod
-	xxxD := dbCC.Table(GetTableName[T](mod)).Model(&t1)
+	xxxD := dbCC.Table(GetTableName(mod)).Model(&t1)
 	xxxD.AutoMigrate(t1)
 	rst := xxxD.Where("id = ?", id).Updates(mod)
 	if 0 >= rst.RowsAffected {
@@ -116,7 +116,7 @@ func GetSubQueryLists[T1, T2 any](mode T1, preLd string, aRst []T2, nPageSize in
 // 设置 nPageSize 和便宜Offset
 // 以及其他查询条件conds
 func GetSubQueryList[T1, T2, T3 any](mode T1, preLd T3, aRst []T2, nPageSize int, Offset int, conds ...interface{}) []T2 {
-	return GetSubQueryLists(mode, GetTableName[T3](preLd), aRst, nPageSize, Offset, conds...)
+	return GetSubQueryLists(mode, GetTableName(preLd), aRst, nPageSize, Offset, conds...)
 }
 
 // 通用
