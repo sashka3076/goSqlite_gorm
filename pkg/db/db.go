@@ -70,6 +70,7 @@ func Create[T any](mod *T) int64 {
 	if 0 >= rst.RowsAffected {
 		log.Println(rst.Error)
 	}
+	xxxD.Commit()
 	return rst.RowsAffected
 }
 
