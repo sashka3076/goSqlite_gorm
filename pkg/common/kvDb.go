@@ -5,9 +5,11 @@ import (
 	"github.com/dgraph-io/badger"
 	"log"
 	"os"
+	"sync"
 )
 
-var cache1 = NewKvDbOp()
+var Cache1 *KvDbOp
+var DoOnce sync.Once
 
 // https://colobu.com/2017/10/11/badger-a-performant-k-v-store/
 // https://juejin.cn/post/6844903814571491335
@@ -16,14 +18,16 @@ type KvDbOp struct {
 }
 
 func NewKvDbOp() *KvDbOp {
-	r := KvDbOp{}
-	CacheName := "db/DbCache"
-	s1 := os.Getenv("CacheName")
-	if "" != s1 {
-		CacheName = s1
-	}
-	r.Init(CacheName)
-	return &r
+	DoOnce.Do(func() {
+		Cache1 = &KvDbOp{}
+		CacheName := "db/DbCache"
+		s1 := os.Getenv("CacheName")
+		if "" != s1 {
+			CacheName = s1
+		}
+		Cache1.Init(CacheName)
+	})
+	return Cache1
 }
 func (r *KvDbOp) SetExpiresAt(ExpiresAt uint64) {
 	r.DbConn.SetDiscardTs(ExpiresAt)
@@ -70,13 +74,13 @@ func (r *KvDbOp) Get(key string) (szRst []byte, err error) {
 func PutAny[T any](key string, data T) {
 	d, err := json.Marshal(data)
 	if nil == err {
-		cache1.Put(key, d)
+		Cache1.Put(key, d)
 	}
 }
 
 func GetAny[T any](key string) (T, error) {
 	var t1 T
-	data, err := cache1.Get(key)
+	data, err := Cache1.Get(key)
 	if nil == err {
 		json.Unmarshal(data, &t1)
 		return t1, nil

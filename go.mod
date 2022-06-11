@@ -15,7 +15,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/gin-contrib/gzip v0.0.5
 	github.com/gin-contrib/static v0.0.1
-	github.com/gin-gonic/gin v1.7.7
+	github.com/gin-gonic/gin v1.8.1
 	github.com/gliderlabs/ssh v0.3.4
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
@@ -23,9 +23,9 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/swaggo/swag v1.8.1
 	github.com/unrolled/secure v1.10.0
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
-	gorm.io/driver/sqlite v1.3.2
-	gorm.io/gorm v1.23.5
+	golang.org/x/net v0.0.0-20220607020251-c690dde0001d
+	gorm.io/driver/sqlite v1.3.4
+	gorm.io/gorm v1.23.6
 )
 
 require (
@@ -81,6 +81,7 @@ require (
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
+	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -111,6 +112,7 @@ require (
 	github.com/miekg/dns v1.1.49 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/projectdiscovery/blackrock v0.0.0-20210415162320-b38689ae3a2e // indirect
@@ -152,7 +154,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
