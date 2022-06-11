@@ -76,7 +76,7 @@ type IpInfo struct {
 	Mobile        string  `json:"mobile"`
 	Proxy         string  `json:"proxy"`
 	Hosting       string  `json:"hosting"`
-	Ip            string  `json:"query" gorm:"primaryKey,unique_index"` // IP
+	Ip            string  `json:"query" gorm:"unique_index"` // IP
 }
 
 // 执行任务
