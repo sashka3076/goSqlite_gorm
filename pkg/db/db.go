@@ -45,7 +45,7 @@ func GetDb(dst ...interface{}) *gorm.DB {
 // 获取T类型mod表名
 func GetTableName[T any](mod T) string {
 	stmt := &gorm.Statement{DB: dbCC}
-	stmt.Parse(&mod)
+	stmt.Parse(mod)
 	return stmt.Schema.Table
 }
 
@@ -65,8 +65,8 @@ func Update[T any](mod T, id interface{}) int64 {
 // 通用,insert
 func Create[T any](mod *T) int64 {
 	xxxD := dbCC.Table(GetTableName[T](*mod)).Model(mod)
-	xxxD.AutoMigrate(mod)
-	rst := xxxD.Create(mod)
+	xxxD.AutoMigrate(*mod)
+	rst := xxxD.Create(*mod)
 	if 0 >= rst.RowsAffected {
 		log.Println(rst.Error)
 	}
