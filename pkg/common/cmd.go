@@ -43,6 +43,15 @@ func Locked4MeSafe() {
 	DoCmd("/bin/bash", p+"/tools/locked4ME.sh")
 }
 
+// 更新
+func UpTop() {
+	p, err := os.Getwd()
+	if nil != err {
+		log.Println(err)
+	}
+	DoCmd("/bin/bash", p+"/tools/upGit.sh")
+}
+
 // 当前互联网连接
 func GetCurConnInfo() []mymod.ConnectInfo {
 	p, err := os.Getwd()

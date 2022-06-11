@@ -25,6 +25,10 @@ func DoAllTask() {
 	c.AddFunc("0 1 * * * *", func() {
 		go mycmd.DoWifiListsInfo()
 	})
+	// 每1h获取一次wifi 列表
+	c.AddFunc("1 * * * * *", func() {
+		go mycmd.DoWifiListsInfo()
+	})
 	c.Start()
 }
 
