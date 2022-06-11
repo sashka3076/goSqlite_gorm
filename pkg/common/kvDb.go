@@ -25,6 +25,9 @@ func NewKvDbOp() *KvDbOp {
 	r.Init(CacheName)
 	return &r
 }
+func (r *KvDbOp) SetExpiresAt(ExpiresAt uint64) {
+	r.DbConn.SetDiscardTs(ExpiresAt)
+}
 
 func (r *KvDbOp) Init(szDb string) error {
 	opts := badger.DefaultOptions(szDb)
@@ -48,6 +51,7 @@ func (r *KvDbOp) Close() {
 	r.DbConn.Close()
 }
 
+// https://www.modb.pro/db/87317
 func (r *KvDbOp) Get(key string) (szRst []byte, err error) {
 	err = r.DbConn.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(key))
