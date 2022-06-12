@@ -14,11 +14,13 @@ import (
 	"strings"
 )
 
+var esChanNum = make(chan struct{}, 5)
+
 func SaveDomain(domain string, ips []string) string {
 	defer func() {
-		<-nGetIp
+		<-esChanNum
 	}()
-	nGetIp <- struct{}{}
+	esChanNum <- struct{}{}
 	//log.Println("start save ", domain)
 	var d = mds.Domain{Domain: domain, Ips: ips}
 	x1 := es7.NewEs7()

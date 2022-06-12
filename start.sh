@@ -1,9 +1,7 @@
 
-cd $HOME/MyWork/webssh2/app
 tmux new -s s -d
-tmux send -t "s" "./run.sh" Enter
+tmux send -t "s" "cd $HOME/MyWork/webssh2/app;./run.sh" Enter
 tmux new -s ss -d
-cd $HOME/MyWork/goSqlite_gorm
-tmux send -t "ss" "./main" Enter
+tmux send -t "ss" "cd $HOME/MyWork/goSqlite_gorm;./main" Enter
 
 
