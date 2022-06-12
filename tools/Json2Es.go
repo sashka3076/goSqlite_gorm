@@ -5,11 +5,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/hktalent/goSqlite_gorm/pkg/util"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
+	"time"
 )
 
 var dir, esUrl *string
@@ -17,6 +21,16 @@ var dir, esUrl *string
 type fnCbk func(s string)
 
 var step int64 = 0
+
+var getJson = util.GetJson4Query
+
+type JsonConfig struct {
+	IdQuery          string `json:"id_query"`
+	ModifiedQuery    string `json:"modified_query"`
+	ReqModifiedQuery string `json:"regModified_query"`
+}
+
+var config = JsonConfig{}
 
 func Log(msg string) {
 	fmt.Printf("\r%8d  %s", step, msg)
@@ -26,7 +40,7 @@ func GetReq(id string, szLstMdf string) bool {
 	// Post "77beaaf8081e4e45adb550194cc0f3a62ebb665f": unsupported protocol scheme ""
 	req, err := http.NewRequest("GET", *esUrl+id+"/_source", nil)
 	if err != nil {
-		Log(fmt.Sprintf("%s error %v", id, err))
+		log.Println(id, " http.NewRequest ", err)
 		return false
 	}
 	// 取消全局复用连接
@@ -48,19 +62,29 @@ func GetReq(id string, szLstMdf string) bool {
 		}()
 	}
 	if err != nil {
-		Log(fmt.Sprintf("%s error %v", id, err))
+		log.Println(id, " http.DefaultClient.Do ", err)
 		return false
 	}
 	var m map[string]interface{}
 	body, err := ioutil.ReadAll(resp.Body)
 	if nil == err {
 		json.Unmarshal(body, &m)
-		if s1, ok := m["modified"]; ok {
+		s1 := util.GetJson4Query(m, config.ReqModifiedQuery)
+		if nil != s1 {
+			if -1 < strings.Index(reflect.TypeOf(s1).Kind().String(), "int") {
+				//i, err := strconv.ParseInt("1405544146", 10, 64)
+				// https://stackoverflow.com/questions/24987131/how-to-parse-unix-timestamp-to-time-time
+				tm := time.Unix(s1.(int64), 0)
+				s1 = tm.String()
+			}
 			if s1 != szLstMdf {
-				Log("will add " + id)
+				//log.Println(szLstMdf, " == ", s1)
+				//Log("will add " + id)
 				return true
 			}
 		}
+	} else {
+		log.Println(id, " ioutil.ReadAll ", err)
 	}
 	//log.Println(id, " 没有发生该改变")
 	step++
@@ -68,19 +92,24 @@ func GetReq(id string, szLstMdf string) bool {
 	return false
 }
 
-var nThreads = make(chan struct{}, 1)
+var nThreads = make(chan struct{}, 3)
 
 func sendReq(data []byte, id string, m map[string]interface{}) {
-	if s1, ok := m["modified"]; ok {
+	s1 := util.GetJson4Query(m, config.ModifiedQuery)
+	if nil != s1 {
 		if !GetReq(id, s1.(string)) {
+			log.Println("已经存在 ", id)
 			return
 		}
+	} else {
+		fmt.Print("没有获取到Modified ", config.ModifiedQuery, " ", id, "\r")
+		return
 	}
 	nThreads <- struct{}{}
 	defer func() {
 		<-nThreads
 	}()
-	fmt.Println("start send to ", *esUrl, " es "+id)
+	//fmt.Println("start send to ", *esUrl+id)
 	// Post "77beaaf8081e4e45adb550194cc0f3a62ebb665f": unsupported protocol scheme ""
 	req, err := http.NewRequest("POST", *esUrl+id, bytes.NewReader(data))
 	if err != nil {
@@ -135,7 +164,8 @@ func fnReadJson(s string) {
 		var m map[string]interface{}
 		err = json.Unmarshal(s1, &m)
 		if nil == err {
-			if id, ok := m["id"]; ok {
+			id := util.GetJson4Query(m, config.IdQuery)
+			if nil != id {
 				sendReq(s1, id.(string), m)
 			}
 		}
@@ -161,6 +191,10 @@ func walkDir(dir string, cbk fnCbk) {
 func main() {
 	dir = flag.String("dir", "", "json file dir")
 	esUrl = flag.String("resUrl", "http://127.0.0.1:9200/intelligence_index/_doc/", "Elasticsearch url, eg: http://127.0.0.1:9200/dht_index/_doc/")
+	flag.StringVar(&config.IdQuery, "IdQuery", ".id", "json query string for id")
+	flag.StringVar(&config.ModifiedQuery, "MdfQuery", ".modified", "json query string for modified")
+	flag.StringVar(&config.ReqModifiedQuery, "RegMdfQuery", ".lastModifiedDate", "json query string for ReqModifiedQuery")
+
 	flag.Parse()
 	if "" == *esUrl || "" == *dir {
 		return

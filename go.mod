@@ -137,6 +137,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
+	github.com/simonnilsson/ask v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/cobra v1.4.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

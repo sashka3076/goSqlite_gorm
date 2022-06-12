@@ -1,6 +1,7 @@
 #!/bin/bash
 $HOME/MyWork/TOP/.run.sh
 upGit cve
+upGit awesome-cve-poc
 upGit IOT_vuln
 upGit nuclei
 upGit nuclei-templates
