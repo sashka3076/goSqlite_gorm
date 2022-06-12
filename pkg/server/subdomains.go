@@ -32,7 +32,7 @@ func SaveDomain(domain string, ips []string) string {
 
 var cache = kv.NewKvDbOp()
 
-var nGetIp = make(chan struct{}, 1024*4)
+var nGetIp = make(chan struct{}, 1024*2)
 
 func GetIps(domain string) []string {
 	defer func() {
