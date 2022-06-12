@@ -30,7 +30,7 @@ func SaveDomain(domain string, ips []string) string {
 	return s
 }
 
-// var cache = kv.NewKvDbOp()
+var cache = kv.NewKvDbOp()
 
 var nGetIp = make(chan struct{}, 12800)
 
@@ -44,8 +44,8 @@ func GetIps(domain string) []string {
 		return a
 	}
 	a1 := hacker.GetDomian2IpsAll(domain)
-	if nil != a && 0 < len(a) {
-		log.Println("ok ", domain)
+	if nil != a1 && 0 < len(a1) {
+		//log.Println("ok ", domain)
 		go kv.PutAny[[]string](domain, a1)
 	}
 	return a1
@@ -56,25 +56,30 @@ func GetIps(domain string) []string {
 func DoDomainLists(a []string) {
 	if nil != a {
 		for _, x := range a {
-			// 跳过ip
-			xreg, err := regexp.Compile(`(\d{1,3}\.){3}\d{1,3}`)
-			if nil == err {
-				x11 := xreg.FindAllString(x, -1)
-				if nil != x11 && 0 < len(x11) {
-					// 做端口扫描任务记录
-					continue
+			go func(x string) {
+				// 跳过ip
+				xreg, err := regexp.Compile(`(\d{1,3}\.){3}\d{1,3}`)
+				if nil == err {
+					x11 := xreg.FindAllString(x, -1)
+					if nil != x11 && 0 < len(x11) {
+						// 做端口扫描任务记录
+						return
+					}
 				}
-			}
-			if -1 < strings.Index(x, "://") {
-				x = strings.Split(x, "://")[1]
-			}
-			if -1 < strings.Index(x, ":") {
-				x = strings.Split(x, ":")[0]
-			}
-			a = GetIps(x)
-			if 0 < len(a) {
-				go SaveDomain(x, a)
-			}
+				if -1 < strings.Index(x, "://") {
+					x = strings.Split(x, "://")[1]
+				}
+				if -1 < strings.Index(x, ":") {
+					x = strings.Split(x, ":")[0]
+				}
+				x = strings.TrimSpace(x)
+				if 4 < len(x) {
+					a = GetIps(x)
+					if 0 < len(a) {
+						go SaveDomain(x, a)
+					}
+				}
+			}(x)
 		}
 	}
 }

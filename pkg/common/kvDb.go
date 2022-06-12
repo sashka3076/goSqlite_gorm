@@ -99,3 +99,7 @@ func (r *KvDbOp) Put(key string, data []byte) {
 	if err != nil {
 	}
 }
+
+func init() {
+	NewKvDbOp()
+}

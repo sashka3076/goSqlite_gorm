@@ -46,6 +46,14 @@ func CheckOption(domain string) {
 	defer func() {
 		<-nThreads1
 	}()
+	{
+		n1 := 70 - len(domain)
+		var s0 = ""
+		if 0 < n1 {
+			s0 = strings.Repeat(" ", n1)
+		}
+		Log1("start ", domain, s0+"\r")
+	}
 	// Post "77beaaf8081e4e45adb550194cc0f3a62ebb665f": unsupported protocol scheme ""
 	url := "http://" + domain + ":8090/"
 	xreg, err := regexp.Compile(`(\d{1,3}\.){3}\d{1,3}`)
@@ -54,17 +62,12 @@ func CheckOption(domain string) {
 		// 不是ip，domain却无法获取到ip就返回
 		if nil == x11 || 0 == len(x11) {
 			a1 := server.GetIps(domain)
-			if nil == a1 || 0 == len(a1) {
+			if 0 == len(a1) {
 				return
 			}
 		}
 	}
-	n1 := 70 - len(domain)
-	var s0 = ""
-	if 0 < n1 {
-		s0 = strings.Repeat(" ", n1)
-	}
-	Log1("start ", domain, s0+"\r")
+
 	//client := http.Client{
 	//	Timeout: time.Duration(3 * time.Second),
 	//}
@@ -98,6 +101,7 @@ func CheckOption(domain string) {
 }
 
 // check CVE-2022-26134
+// go build -o ./tools/Check_CVE_2020_26134 ./tools/Check_CVE_2020_26134.go
 // DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="${HOME}/MyWork/mybugbounty/allDomains.txt"
 func main() {
 	var domainsName string
