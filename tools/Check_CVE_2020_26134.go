@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var nThreads1 = make(chan struct{}, 10000)
+var nThreads1 = make(chan struct{}, 1024*6)
 
 type Cve202026134 struct {
 	gorm.Model
@@ -32,11 +32,14 @@ func SaveOut() {
 	for {
 		select {
 		case x := <-saveC:
-			if 0 < db.Create[Cve202026134](&x) {
-				Log1(x.Url, " is save")
-			} else {
-				Log1(x.Url, " save err")
-			}
+			go func(x Cve202026134) {
+				if 0 < db.Create[Cve202026134](&x) {
+					Log1(x.Url, " is save")
+				} else {
+					Log1(x.Url, " save err")
+				}
+			}(x)
+
 		}
 	}
 }
