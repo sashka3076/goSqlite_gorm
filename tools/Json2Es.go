@@ -95,25 +95,27 @@ func GetReq(id string, szLstMdf string) bool {
 var nThreads = make(chan struct{}, 3)
 
 func sendReq(data []byte, id string, m map[string]interface{}) {
+	nThreads <- struct{}{}
+	defer func() {
+		step++
+		Log("")
+		<-nThreads
+	}()
 	s1 := util.GetJson4Query(m, config.ModifiedQuery)
 	if nil != s1 {
 		if !GetReq(id, s1.(string)) {
-			log.Println("已经存在 ", id)
+			//log.Println("已经存在 ", id)
 			return
 		}
 	} else {
-		fmt.Print("没有获取到Modified ", config.ModifiedQuery, " ", id, "\r")
+		//fmt.Print("没有获取到Modified ", config.ModifiedQuery, " ", id, "\r")
 		return
 	}
-	nThreads <- struct{}{}
-	defer func() {
-		<-nThreads
-	}()
 	//fmt.Println("start send to ", *esUrl+id)
 	// Post "77beaaf8081e4e45adb550194cc0f3a62ebb665f": unsupported protocol scheme ""
 	req, err := http.NewRequest("POST", *esUrl+id, bytes.NewReader(data))
 	if err != nil {
-		Log(fmt.Sprintf("%s error %v", id, err))
+		//Log(fmt.Sprintf("%s error %v", id, err))
 		return
 	}
 	// 取消全局复用连接
@@ -142,8 +144,6 @@ func sendReq(data []byte, id string, m map[string]interface{}) {
 	// body, err := ioutil.ReadAll(resp.Body)
 	// _, err = io.Copy(ioutil.Discard, resp.Body) // 手动丢弃读取完毕的数据
 	// json.NewDecoder(resp.Body).Decode(&data)
-	step++
-	Log("")
 	// req.Body.Close()
 	// go http.Post(resUrl, "application/json",, post_body)
 }
