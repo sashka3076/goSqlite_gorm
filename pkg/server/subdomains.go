@@ -15,6 +15,10 @@ import (
 )
 
 func SaveDomain(domain string, ips []string) string {
+	defer func() {
+		<-nGetIp
+	}()
+	nGetIp <- struct{}{}
 	//log.Println("start save ", domain)
 	var d = mds.Domain{Domain: domain, Ips: ips}
 	x1 := es7.NewEs7()
@@ -76,7 +80,7 @@ func DoDomainLists(a []string) {
 				if 4 < len(x) {
 					a = GetIps(x)
 					if 0 < len(a) {
-						go SaveDomain(x, a)
+						SaveDomain(x, a)
 					}
 				}
 			}(x)
