@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hktalent/go4Hacker/lib/hacker"
 	kv "github.com/hktalent/goSqlite_gorm/pkg/common"
@@ -38,7 +39,7 @@ func SaveDomain(domain string, ips []string) string {
 		}
 	}
 	s := x1.Create(d, domain)
-	log.Println("saved ", domain, s)
+	fmt.Print("saved ", domain, "\r")
 	return s
 }
 
