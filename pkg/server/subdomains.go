@@ -8,8 +8,10 @@ import (
 	db "github.com/hktalent/goSqlite_gorm/pkg/db"
 	"github.com/hktalent/goSqlite_gorm/pkg/es7"
 	mds "github.com/hktalent/goSqlite_gorm/pkg/models"
+	"github.com/hktalent/goSqlite_gorm/pkg/util"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -21,18 +23,22 @@ func SaveDomain(domain string, ips []string) string {
 		<-esChanNum
 	}()
 	esChanNum <- struct{}{}
+	if util.Contains[string](ips, "127.0.0.1") {
+		return ""
+	}
 	//log.Println("start save ", domain)
 	var d = mds.Domain{Domain: domain, Ips: ips}
 	x1 := es7.NewEs7()
 	x2 := x1.GetDoc(d, domain)
 	if "" != x2 {
-		if -1 == strings.Index(x2, "404 Not Found") && -1 < strings.Index(x2, domain) {
+		//log.Println("x2 := x1.GetDoc(d, domain) ", domain, x2)
+		if util.NotContains(x2, []string{"404 Not Found", "error reading response body"}) && -1 < strings.Index(x2, domain) {
 			log.Println("exist ", domain, " ", x2)
 			return ""
 		}
 	}
 	s := x1.Create(d, domain)
-	log.Println("saved ", domain)
+	log.Println("saved ", domain, s)
 	return s
 }
 
@@ -45,9 +51,12 @@ func GetIps(domain string) []string {
 		<-nGetIp
 	}()
 	nGetIp <- struct{}{}
-	a, err := kv.GetAny[[]string](domain)
-	if nil == err {
-		return a
+	s1 := os.Getenv("NoUseCacheIp")
+	if "" == s1 {
+		a, err := kv.GetAny[[]string](domain)
+		if nil == err {
+			return a
+		}
 	}
 	a1 := hacker.GetDomian2IpsAll(domain)
 	if nil != a1 && 0 < len(a1) {

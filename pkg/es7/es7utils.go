@@ -80,9 +80,8 @@ func (es7 *Es7Utils) GetDoc(t1 any, id string) string {
 	if nil != err {
 		log.Println(err)
 		return ""
-	} else {
-		response.Body.Close()
 	}
+	defer response.Body.Close()
 	return response.String()
 }
 func (es7 *Es7Utils) Update(t1 any, id string) string {

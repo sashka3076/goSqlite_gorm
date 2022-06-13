@@ -105,7 +105,7 @@ func CheckOption(domain string) {
 
 // check CVE-2022-26134
 // go build -o ./tools/Check_CVE_2020_26134 ./tools/Check_CVE_2020_26134.go
-// DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="${HOME}/MyWork/mybugbounty/allDomains.txt"
+// NoUseCacheIp=1 DbName="db/Cve202026134" CacheName="db/Cve202026134Cache" ./tools/Check_CVE_2020_26134 -config="${HOME}/MyWork/mybugbounty/allDomains.txt"
 func main() {
 	var domainsName string
 	var debug bool
