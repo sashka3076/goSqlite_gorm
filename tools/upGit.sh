@@ -11,4 +11,3 @@ $HOME/MyWork/goSqlite_gorm/tools/upDb.sh
 upGit SecLists
 upGit codeql
 upAll $HOME/MyWork/bugbounty/
-

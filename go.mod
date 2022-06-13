@@ -19,7 +19,7 @@ require (
 	github.com/gliderlabs/ssh v0.3.4
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/hktalent/go4Hacker v0.0.0-20220519134559-c908caccec1d
+	github.com/hktalent/go4Hacker v0.0.0-20220610050413-bb38dc39c4b9
 	github.com/robfig/cron v1.2.0
 	github.com/swaggo/swag v1.8.1
 	github.com/unrolled/secure v1.10.0
