@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hktalent/go4Hacker/lib/hacker"
 	kv "github.com/hktalent/goSqlite_gorm/pkg/common"
@@ -34,12 +33,12 @@ func SaveDomain(domain string, ips []string) string {
 	if "" != x2 {
 		//log.Println("x2 := x1.GetDoc(d, domain) ", domain, x2)
 		if util.NotContains(x2, []string{"404 Not Found", "error reading response body"}) && -1 < strings.Index(x2, domain) {
-			log.Println("exist ", domain, " ", x2)
+			//log.Println("exist ", domain, " ", x2)
 			return ""
 		}
 	}
 	s := x1.Create(d, domain)
-	fmt.Print("saved ", domain, "\r")
+	//fmt.Print("saved ", domain, "\r")
 	return s
 }
 
