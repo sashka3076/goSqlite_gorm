@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/OWASP/Amass/v3 v3.19.2
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/caffix/amass v2.3.0+incompatible
 	github.com/caffix/netmap v0.0.0-20220329224824-86a226811ec6
 	github.com/caffix/service v0.2.3
@@ -21,6 +22,7 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/hktalent/go4Hacker v0.0.0-20220610050413-bb38dc39c4b9
 	github.com/robfig/cron v1.2.0
+	github.com/simonnilsson/ask v0.2.0
 	github.com/swaggo/swag v1.8.1
 	github.com/unrolled/secure v1.10.0
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
@@ -40,7 +42,6 @@ require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
-	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -137,7 +138,6 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
-	github.com/simonnilsson/ask v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/cobra v1.4.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

@@ -6,11 +6,13 @@ import (
 	"encoding/json"
 	elasticsearch7 "github.com/elastic/go-elasticsearch/v7"
 	"github.com/elastic/go-elasticsearch/v7/esapi"
+	"github.com/hktalent/goSqlite_gorm/pkg/util"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -41,6 +43,47 @@ func NewEs7() *Es7Utils {
 // get strutct name to index name
 func (es7 *Es7Utils) GetIndexName(t1 any) string {
 	return strings.ToLower(reflect.TypeOf(t1).Name() + "_index")
+}
+
+func GetCount(url, index, field string) (int, error) {
+	req, err := http.NewRequest("POST", url+"/"+index+"/_search?size=0&track_total_hits=true", nil)
+	if err == nil {
+		req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15")
+		req.Header.Add("Cache-Control", "no-cache")
+		req.Header.Add("Content-Type", "application/json; charset=UTF-8")
+		szSendData := `{
+  "aggs" : {
+    "types_count" : { "value_count" : { "field" : "` + field + `" } }
+  }
+		}`
+
+		req.Header.Add("Content-Length", strconv.Itoa(len([]byte(szSendData))))
+		// keep-alive
+		req.Header.Add("Connection", "close")
+		req.Close = true
+		req.Body = io.NopCloser(strings.NewReader(szSendData))
+
+		resp, err := http.DefaultClient.Do(req)
+		if resp != nil {
+			defer resp.Body.Close() // resp 可能为 nil，不能读取 Body
+		}
+		if err != nil {
+			return 0, err
+		}
+		s1, err := ioutil.ReadAll(resp.Body)
+		if nil != err {
+			return 0, err
+		} else {
+			var m1 map[string]interface{}
+			json.Unmarshal(s1, &m1)
+			n1 := util.GetJson4Query(m1, ".hits.total.value")
+			if nil != n1 {
+				x1 := n1.(float64)
+				return int(x1), nil
+			}
+		}
+	}
+	return 0, err
 }
 
 func GetUrlInfo(url string, json string) string {

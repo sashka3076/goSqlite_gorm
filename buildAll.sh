@@ -17,8 +17,7 @@ git push
 
 cd $XX1
 source ~/.zshrc
-go get -u
+#go get -u
 go mod tidy
 go build main.go
-git commit -m "up" .
-git push
+gitPush "优化若干"

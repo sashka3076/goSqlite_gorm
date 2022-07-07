@@ -43,7 +43,7 @@ func Locked4MeSafe() {
 	DoCmd("/bin/bash", p+"/tools/locked4ME.sh")
 }
 
-// 更新
+// 更新 重要的github项目
 func UpTop() {
 	p, err := os.Getwd()
 	if nil != err {
@@ -53,6 +53,9 @@ func UpTop() {
 }
 
 // 当前互联网连接
+// codesign -vvvv -R="anchor apple" /usr/libexec/rapportd
+// otool -L /usr/libexec/rapportd
+// lsof -p 3333
 func GetCurConnInfo() []mymod.ConnectInfo {
 	p, err := os.Getwd()
 	if nil != err {
@@ -60,11 +63,11 @@ func GetCurConnInfo() []mymod.ConnectInfo {
 		return nil
 	}
 	a, err := DoCmd("/bin/bash", p+"/tools/getCurNetConn.sh", "f")
-	if nil != err {
-		log.Println(err)
+	if nil != err && "" == a {
+		log.Println("GetCurConnInfo = ", err, a)
 		return nil
 	}
-	x := strings.Split(a, "\n")
+	x := strings.Split(strings.TrimSpace(a), "\n")
 	clst := []mymod.ConnectInfo{}
 	dbCC.AutoMigrate(&mymod.IpInfo{})
 	for _, y := range x {
@@ -158,7 +161,7 @@ func GetAirPortBSSID() *mymod.WifiLists {
 	}
 	a, err := DoCmd("/bin/bash", "-c", "echo $PPSSWWDD|sudo -S "+sCmd+" -s")
 	if nil != err {
-		log.Println(err)
+		log.Println("GetAirPortBSSID = ", err)
 		return nil
 	}
 	x := strings.Split(a, "\n")
@@ -210,7 +213,7 @@ func GetMacWhereAmI(wami *mymod.WhereAmI) {
 	}
 	a, err := DoCmd("/bin/bash", "-c", "echo $PPSSWWDD|sudo -S "+p+"/tools/whereami")
 	if nil != err {
-		log.Println(err)
+		log.Println("GetMacWhereAmI = ", err)
 		return
 	}
 	x := strings.Split(a, "\n")

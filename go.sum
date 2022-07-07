@@ -508,8 +508,6 @@ github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/J
 github.com/hashicorp/serf v0.9.5/go.mod h1:UWDWwZeL5cuWDJdl0C6wrvrUwEqtQ4ZKBKKENpqIUyk=
 github.com/hidal-go/hidalgo v0.0.0-20190814174001-42e03f3b5eaa h1:hBE4LGxApbZiV/3YoEPv7uYlUMWOogG1hwtkpiU87zQ=
 github.com/hidal-go/hidalgo v0.0.0-20190814174001-42e03f3b5eaa/go.mod h1:bPkrxDlroXxigw8BMWTEPTv4W5/rQwNgg2BECXsgyX0=
-github.com/hktalent/go4Hacker v0.0.0-20220519134559-c908caccec1d h1:kTNbJ8OnWSDc/AG9gZx99tyHjmuxvPPs333A1F2N6UI=
-github.com/hktalent/go4Hacker v0.0.0-20220519134559-c908caccec1d/go.mod h1:Mp15ofPLpEzvJUl8BR7ctBhp0lf2xL5Nr76xwlTfj9M=
 github.com/hktalent/go4Hacker v0.0.0-20220610050413-bb38dc39c4b9 h1:OAnRWLddVE6FPOeIHJcgDYWoQWpvh/F5w/1MEJikWIQ=
 github.com/hktalent/go4Hacker v0.0.0-20220610050413-bb38dc39c4b9/go.mod h1:Mp15ofPLpEzvJUl8BR7ctBhp0lf2xL5Nr76xwlTfj9M=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=

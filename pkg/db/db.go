@@ -18,6 +18,7 @@ var DbName = "db/mydbfile"
 // 获取Gorm db连接、操作对象
 func GetDb(dst ...interface{}) *gorm.DB {
 	if nil != dbCC {
+		log.Println("dbCC not is nil, DbName = ", DbName)
 		return dbCC
 	}
 	szDf := DbName
@@ -107,9 +108,9 @@ func GetOne[T any](rst *T, args ...interface{}) *T {
 // 以及其他查询条件conds
 func GetSubQueryLists[T1, T2 any](mode T1, preLd string, aRst []T2, nPageSize int, Offset int, conds ...interface{}) []T2 {
 	if "" != preLd {
-		dbCC.Model(&mode).Preload(preLd).Limit(nPageSize).Offset(Offset*nPageSize).Find(&aRst, conds...)
+		dbCC.Model(&mode).Preload(preLd).Limit(nPageSize).Offset(Offset*nPageSize).Order("updated_at DESC").Find(&aRst, conds...)
 	} else {
-		dbCC.Model(&mode).Limit(nPageSize).Offset(Offset*nPageSize).Find(&aRst, conds...)
+		dbCC.Model(&mode).Limit(nPageSize).Offset(Offset*nPageSize).Order("updated_at DESC").Find(&aRst, conds...)
 	}
 	return aRst
 }

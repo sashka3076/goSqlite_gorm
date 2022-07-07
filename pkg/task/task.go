@@ -25,7 +25,7 @@ func DoAllTask() {
 	c.AddFunc("0 1 * * * *", func() {
 		go mycmd.DoWifiListsInfo()
 	})
-	// 每1h获取一次wifi 列表
+	// 每1h更新 重要的github项目
 	c.AddFunc("0 0 23 * * *", func() {
 		go mycmd.UpTop()
 	})

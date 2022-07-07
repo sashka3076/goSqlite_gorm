@@ -6,6 +6,8 @@
 dist
 hktdist
 /tools/pages/data
+goSqlite_gorm
+main
 node_modules
 yarn.lock
 DbCache

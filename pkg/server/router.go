@@ -102,18 +102,20 @@ func GetRmtsvLists(g *gin.Context) {
 
 // 当前连接信息
 func GetccLists(g *gin.Context) {
-	m, _ := time.ParseDuration("-3h")
+	m, _ := time.ParseDuration("-24h") //  支持h，不支持d
 	s0 := time.Now().Add(m)
 	currentPage, err := strconv.Atoi(g.Request.FormValue("currentPage"))
 	if nil != err {
-		currentPage = 1
+		currentPage = 0 // gorm的第一页是0，不是1
 	}
 	pageSize, err := strconv.Atoi(g.Request.FormValue("pageSize"))
 	if nil != err {
 		pageSize = 100
 	}
-	var rst []mymod.ConnectInfo = db.GetSubQueryLists(mymod.ConnectInfo{}, "IpInfo",
-		[]mymod.ConnectInfo{}, pageSize, currentPage, "updated_at > ?", s0)
+	var rst []mymod.ConnectInfo
+	rst = db.GetSubQueryLists[mymod.ConnectInfo](mymod.ConnectInfo{}, "IpInfo",
+		rst, pageSize, currentPage) // , "updated_at > ?", s0
+	log.Println("GetccLists len(rst)", len(rst))
 	if nil != rst && 0 < len(rst) {
 		//	for i, x := range rst {
 		//		if "" == x.IpInfo.Ip {
@@ -268,6 +270,7 @@ func ReverseProxy(path, target string, router *gin.Engine) {
 }
 
 func InitRoute(router *gin.Engine) {
+	gin.SetMode(gin.DebugMode)
 	router.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedExtensions([]string{".pdf", ".mp4"})))
 	router.Use(static.Serve("/", static.LocalFile("dist", false)))
 	router.Use(static.Serve("/md", static.LocalFile("md", false)))

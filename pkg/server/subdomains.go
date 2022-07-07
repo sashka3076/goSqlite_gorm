@@ -2,9 +2,11 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/hktalent/go4Hacker/lib/hacker"
 	kv "github.com/hktalent/goSqlite_gorm/pkg/common"
+	"github.com/hktalent/goSqlite_gorm/pkg/config"
 	db "github.com/hktalent/goSqlite_gorm/pkg/db"
 	"github.com/hktalent/goSqlite_gorm/pkg/es7"
 	mds "github.com/hktalent/goSqlite_gorm/pkg/models"
@@ -146,6 +148,48 @@ func DoListDomains(s string) {
 	}
 }
 
+func GetCnt(g *gin.Context) {
+	s := GetParms(g, "t")
+	var n int
+	var err error
+	switch s {
+	case "ic":
+		n, err = es7.GetCount(config.Config.EsUrl, "domain_index", "_source.ip")
+		if nil == err {
+			g.JSON(http.StatusOK, gin.H{"data": n})
+			return
+		}
+	case "dc":
+		n, err = es7.GetCount(config.Config.EsUrl, "domain_index", "_source.domain")
+		if nil == err {
+			g.JSON(http.StatusOK, gin.H{"data": n})
+			return
+		}
+	case "ip":
+		d := GetParms(g, "d")
+		if govalidator.IsIP(d) {
+			s = es7.GetUrlInfo(config.Config.EsUrl+"/domain_index/_search?q=ip:%20in%20"+d, `{"from": 0,"size": 10000}`)
+			var m1 map[string]interface{}
+			json.Unmarshal([]byte(s), &m1)
+			s1 := util.GetJson4Query(m1, ".hits.hits[0]._id")
+			if nil != s1 {
+				g.JSON(http.StatusOK, gin.H{"data": s1})
+			}
+			return
+		}
+	case "dm":
+		d := GetParms(g, "d")
+		if govalidator.IsDNSName(d) {
+			s = es7.GetUrlInfo(config.Config.EsUrl+"/domain_index/_search?q=domain:%20in%20"+d, `{"from": 0,"size": 10000}`)
+			var m1 map[string]interface{}
+			json.Unmarshal([]byte(s), &m1)
+			g.JSON(http.StatusOK, &m1)
+			return
+		}
+	}
+	g.JSON(http.StatusBadRequest, err)
+}
+
 // 获取domian列表信息
 func GetDomainLst(g *gin.Context) {
 	a := []string{}
@@ -159,7 +203,7 @@ func GetDomainLst(g *gin.Context) {
 	}
 	if 0 < len(a) {
 		log.Println(strings.Join(a, "%20or%20"))
-		s = es7.GetUrlInfo("http://127.0.0.1:9200/domain_index/_search?q="+strings.Join(a, "%20or%20"), `{"from": 0,"size": 10000}`)
+		s = es7.GetUrlInfo(config.Config.EsUrl+"/domain_index/_search?q="+strings.Join(a, "%20or%20"), `{"from": 0,"size": 10000}`)
 	} else {
 		s = "[]"
 	}
@@ -173,9 +217,11 @@ func GetParms(g *gin.Context, key string) string {
 	s := g.Request.FormValue(key)
 	if "" == s {
 		var m map[string]string
-		g.BindJSON(&m)
-		if s1, ok := m["dlst"]; ok {
-			s = s1
+		_ = g.BindJSON(&m)
+		if 0 < len(m) {
+			if s1, ok := m[key]; ok {
+				s = s1
+			}
 		}
 	}
 	return s
@@ -279,5 +325,6 @@ func InitSubDomainRoute(router *gin.RouterGroup) {
 	// 记录域名(转换域名ips信息 + 域名)
 	router.POST("/dlists", SaveDomainLst)
 	router.POST("/gdlists", GetDomainLst)
-
+	// getCount
+	router.GET("/cnt", GetCnt)
 }

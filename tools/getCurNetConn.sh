@@ -1,2 +1,1 @@
-./getCurNetConn1.sh f|grep -Ev '(DingTalk|Firefox|Safari|WeChat|Google Chrome|Google Drive|Docker)\.app|com\.apple\.WebKit\.Networking'
-
+$HOME/MyWork/goSqlite_gorm/tools/getCurNetConn1.sh f|grep -Ev '(DingTalk|Firefox|Safari|WeChat|Google Chrome|Google Drive|Docker|Visual Studio Code|Outline)\.app|TabNine|com\.apple\.WebKit\.Networking'
